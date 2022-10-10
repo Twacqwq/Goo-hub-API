@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"errors"
 	"fmt"
+	"thub/app/models/user"
 	"thub/pkg/config"
 	"thub/pkg/database"
 	"time"
@@ -44,4 +45,7 @@ func SetupDB() {
 	database.SQLDB.SetMaxIdleConns(config.GetInt("database.mysql.max_idle_connections"))
 	// 设置每个连接的过期时间
 	database.SQLDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
+
+	// 数据库迁移
+	database.DB.AutoMigrate(&user.User{})
 }
