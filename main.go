@@ -26,6 +26,10 @@ func main() {
 	config.InitConfig(env)
 	bootstrap.SetupLogger()
 
+	// 设置 gin 的运行模式，支持 debug release test
+	// release 会屏蔽生产信息 官方推荐在生产环境使用
+	gin.SetMode(gin.ReleaseMode)
+
 	// 启动服务器
 	router := gin.New()
 

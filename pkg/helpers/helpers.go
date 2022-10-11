@@ -1,7 +1,12 @@
 package helpers
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+	"time"
+)
 
+// 判断.env配置属性的值是否为空
 func Empty(val interface{}) bool {
 	if val == nil {
 		return true
@@ -24,4 +29,9 @@ func Empty(val interface{}) bool {
 		return v.IsNil()
 	}
 	return reflect.DeepEqual(val, reflect.Zero(v.Type()).Interface())
+}
+
+// 将 time.Duration 类型 输出为小数点后3位的ms
+func MicrosecondsStr(elapsed time.Duration) string {
+	return fmt.Sprintf("%.3fms", float64(elapsed.Nanoseconds())/1e6) // 1ms = 1e6ns
 }
