@@ -1,10 +1,10 @@
 package auth
 
 import (
-	"net/http"
 	v1 "thub/app/http/controllers/api/v1"
 	"thub/app/models/user"
 	"thub/app/requests"
+	"thub/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +21,7 @@ func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 	if ok := requests.Validate(c, &request, requests.ValidateSignupPhoneExist); !ok {
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	response.JSON(c, gin.H{
 		"exist": user.IsPhoneExist(request.Phone),
 	})
 }
@@ -31,7 +31,7 @@ func (sc *SignupController) IsEmailExist(c *gin.Context) {
 	if ok := requests.Validate(c, &request, requests.ValidateSignupEmailExist); !ok {
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	response.JSON(c, gin.H{
 		"exist": user.IsEmailExist(request.Email),
 	})
 }

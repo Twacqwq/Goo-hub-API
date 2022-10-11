@@ -1,10 +1,10 @@
 package auth
 
 import (
-	"net/http"
 	v1 "thub/app/http/controllers/api/v1"
 	"thub/pkg/captcha"
 	"thub/pkg/logger"
+	"thub/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,7 @@ func (vc *VerifyCodeController) ShowCaptcha(c *gin.Context) {
 	// 记录错误日志
 	logger.LogIf(err)
 	// 返回数据
-	c.JSON(http.StatusOK, gin.H{
+	response.JSON(c, gin.H{
 		"captcha_id":    id,
 		"captcha_image": b64s,
 	})
