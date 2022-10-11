@@ -120,6 +120,10 @@ func GetUint(path string, defaultValue ...interface{}) uint {
 	return cast.ToUint(internalGet(path, defaultValue...))
 }
 
+func GetFloat64(path string, defaultValue ...interface{}) float64 {
+	return cast.ToFloat64(internalGet(path, defaultValue...))
+}
+
 // GetBool 获取 Bool 类型的配置信息
 func GetBool(path string, defaultValue ...interface{}) bool {
 	return cast.ToBool(internalGet(path, defaultValue...))
