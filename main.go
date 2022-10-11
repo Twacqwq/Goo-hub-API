@@ -22,6 +22,10 @@ func main() {
 	flag.Parse()
 	config.InitConfig(env)
 
+	// 初始化日志
+	config.InitConfig(env)
+	bootstrap.SetupLogger()
+
 	// 启动服务器
 	router := gin.New()
 
