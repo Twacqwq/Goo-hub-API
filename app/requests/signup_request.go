@@ -1,12 +1,22 @@
 package requests
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 )
 
+// 验证函数类型
+type ValidatorFunc func(interface{}, *gin.Context) map[string][]string
+
 type SignupPhoneExistRequest struct {
 	Phone string `json:"phone,omitempty" valid:"phone"`
+}
+
+type SignupEmailExistRequest struct {
+	Email string `json:"email,omitempty" valid:"email"`
 }
 
 func ValidateSignupPhoneExist(data interface{}, c *gin.Context) map[string][]string {
@@ -23,20 +33,7 @@ func ValidateSignupPhoneExist(data interface{}, c *gin.Context) map[string][]str
 		},
 	}
 
-	// 配置初始化
-	opts := govalidator.Options{
-		Data:          data,
-		Rules:         rules,
-		TagIdentifier: "valid", // 模型中 Struct 标签标识符
-		Messages:      messages,
-	}
-
-	//开始验证
-	return govalidator.New(opts).ValidateStruct()
-}
-
-type SignupEmailExistRequest struct {
-	Email string `json:"email,omitempty" valid:"email"`
+	return validate(data, rules, messages)
 }
 
 func ValidateSignupEmailExist(data interface{}, c *gin.Context) map[string][]string {
@@ -53,12 +50,38 @@ func ValidateSignupEmailExist(data interface{}, c *gin.Context) map[string][]str
 		},
 	}
 
+	return validate(data, rules, messages)
+}
+
+func Validate(c *gin.Context, obj interface{}, handler ValidatorFunc) bool {
+	// 解析请求，支持JSON数据，表单，URL Query
+	if err := c.ShouldBind(obj); err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "请求参数解析错误",
+			"error":   err.Error(),
+		})
+		fmt.Println(err.Error())
+		return false
+	}
+	// 验证表单
+	errs := handler(obj, c)
+	if len(errs) > 0 {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "请求验证不通过",
+			"errors":  errs,
+		})
+		return false
+	}
+	return true
+}
+
+// 验证封装
+func validate(data interface{}, rules, messages govalidator.MapData) map[string][]string {
 	opts := govalidator.Options{
 		Data:          data,
 		Rules:         rules,
 		TagIdentifier: "valid",
 		Messages:      messages,
 	}
-
 	return govalidator.New(opts).ValidateStruct()
 }
