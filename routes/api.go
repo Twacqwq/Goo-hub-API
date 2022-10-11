@@ -18,6 +18,11 @@ func RegisterAPIRoutes(router *gin.Engine) {
 
 			// 判断邮箱是否注册
 			authGroup.POST("/signup/email/exist", suc.IsEmailExist)
+
+			vcc := new(auth.VerifyCodeController)
+
+			// 显示验证码
+			authGroup.POST("/verify-codes/captcha", vcc.ShowCaptcha)
 		}
 	}
 }
