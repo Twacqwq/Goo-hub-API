@@ -1,4 +1,4 @@
-// Package validators 自定义规则验证器
+// Package validators 存放自定义规则和验证器
 package validators
 
 import "thub/pkg/captcha"
