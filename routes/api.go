@@ -37,6 +37,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			authGroup.POST("/login/using-phone", lgc.LoginByPhone)
 			// [手机号|用户名|邮箱] 登录
 			authGroup.POST("/login/using-password", lgc.LoginByPassword)
+			// 刷新令牌
+			authGroup.POST("/login/refresh-token", lgc.RefreshToken)
 		}
 	}
 }
