@@ -106,6 +106,59 @@ func SignupUsingPhone(data interface{}, c *gin.Context) map[string][]string {
 	return errs
 }
 
+// 邮箱注册验证器
+type SignupUsingEmailRequest struct {
+	Email           string `json:"email,omitempty" valid:"email"`
+	VerifyCode      string `json:"verify_code,omitempty" valid:"verify_code"`
+	Name            string `json:"name" valid:"name"`
+	Password        string `json:"password,omitempty" valid:"password"`
+	PasswordConfirm string `json:"password_confirm,omitempty" valid:"password_confirm"`
+}
+
+// 验证邮箱注册参数
+func SignupUsingEmail(data interface{}, c *gin.Context) map[string][]string {
+	rules := govalidator.MapData{
+		"email":            []string{"required", "email", "min:4", "max:30", "not_exists:users,email"},
+		"verify_code":      []string{"required", "digits:6"},
+		"name":             []string{"required", "alpha_num", "between:3,20", "not_exists:users,name"},
+		"password":         []string{"required", "min:6"},
+		"password_confirm": []string{"required"},
+	}
+
+	messages := govalidator.MapData{
+		"email": []string{
+			"required:邮箱为必填项",
+			"email:邮箱格式不正确",
+			"min:长度需要大于4",
+			"max:长度不可超过30",
+			"not_exists:该Email已被占用",
+		},
+		"verify_code": []string{
+			"required:验证码为必填项",
+			"digits:验证码长度为6",
+		},
+		"name": []string{
+			"required:名称为必填项",
+			"alpha_num:用户名格式错误,只允许英文和数字",
+			"between:用户名长度在3~20之间",
+		},
+		"password": []string{
+			"required:密码为必填项",
+			"min:密码长度过小",
+		},
+		"password_confirm": []string{
+			"required:请再次输入密码",
+		},
+	}
+
+	errs := validate(data, rules, messages)
+	_data := data.(*SignupUsingEmailRequest)
+	errs = validators.ValidatePasswordConfirm(_data.Password, _data.PasswordConfirm, errs)
+	errs = validators.ValidateVerifyCode(_data.Email, _data.VerifyCode, errs)
+
+	return errs
+}
+
 func Validate(c *gin.Context, obj interface{}, handler ValidatorFunc) bool {
 	// 解析请求，支持JSON数据，表单，URL Query
 	if err := c.ShouldBind(obj); err != nil {

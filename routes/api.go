@@ -19,6 +19,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			authGroup.POST("/signup/email/exist", suc.IsEmailExist)
 			// 手机注册
 			authGroup.POST("/signup/using-phone", suc.SignupUsingPhone)
+			// 邮箱注册
+			authGroup.POST("/signup/using-email", suc.SignupUsingEmail)
 
 			vcc := new(auth.VerifyCodeController)
 
