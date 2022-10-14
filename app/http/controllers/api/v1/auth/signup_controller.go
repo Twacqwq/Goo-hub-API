@@ -26,6 +26,7 @@ func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 	})
 }
 
+// 检测邮箱是否被注册
 func (sc *SignupController) IsEmailExist(c *gin.Context) {
 	request := requests.SignupEmailExistRequest{}
 	if ok := requests.Validate(c, &request, requests.ValidateSignupEmailExist); !ok {
@@ -34,4 +35,30 @@ func (sc *SignupController) IsEmailExist(c *gin.Context) {
 	response.JSON(c, gin.H{
 		"exist": user.IsEmailExist(request.Email),
 	})
+}
+
+// 手机注册
+func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
+	request := requests.SignupUsingPhoneRequest{}
+	if ok := requests.Validate(c, &request, requests.SignupUsingPhone); !ok {
+		return
+	}
+
+	_user := user.User{
+		Name:     request.Name,
+		Phone:    request.Phone,
+		Password: request.Password,
+	}
+
+	// 创建用户
+	_user.Create()
+
+	if _user.ID > 0 {
+		response.CreatedJSON(c, gin.H{
+			"data": _user,
+		})
+	} else {
+		response.Abort500(c, "创建用户失败, 请稍后再试")
+	}
+
 }

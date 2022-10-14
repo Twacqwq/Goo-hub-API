@@ -1,6 +1,9 @@
 package user
 
-import "thub/app/models"
+import (
+	"thub/app/models"
+	"thub/pkg/database"
+)
 
 type User struct {
 	models.BaseModel
@@ -9,4 +12,8 @@ type User struct {
 	Phone    string `json:"-"`
 	Password string `json:"-"`
 	models.CommonTimestampsField
+}
+
+func (user *User) Create() {
+	database.DB.Create(user)
 }

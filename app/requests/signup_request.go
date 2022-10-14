@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"thub/app/requests/validators"
 	"thub/pkg/response"
 
 	"github.com/gin-gonic/gin"
@@ -52,6 +53,57 @@ func ValidateSignupEmailExist(data interface{}, c *gin.Context) map[string][]str
 	}
 
 	return validate(data, rules, messages)
+}
+
+// 注册接口验证器
+type SignupUsingPhoneRequest struct {
+	Name            string `json:"name,omitempty" valid:"name"`
+	VerifyCode      string `json:"verify_code,omitempty" valid:"verify_code"`
+	Phone           string `json:"phone,omitempty" valid:"phone"`
+	Password        string `json:"password,omitempty" valid:"password"`
+	PasswordConfirm string `json:"password_confirm,omitempty" valid:"password_confirm"`
+}
+
+// 验证手机注册参数
+func SignupUsingPhone(data interface{}, c *gin.Context) map[string][]string {
+	rules := govalidator.MapData{
+		"name":             []string{"required", "alpha_num", "between:3,20", "not_exists:users,name"},
+		"verify_code":      []string{"required", "digits:6"},
+		"phone":            []string{"required", "digits:11", "not_exists:users,phone"},
+		"password":         []string{"required", "min:6"},
+		"password_confirm": []string{"required"},
+	}
+
+	messages := govalidator.MapData{
+		"phone": []string{
+			"required:手机号为必填项，参数名称 phone",
+			"digits:手机号长度必须为 11 位的数字",
+		},
+		"name": []string{
+			"required:用户名为必填项",
+			"alpha_num:用户名格式错误，只允许数字和英文",
+			"between:用户名长度需在 3~20 之间",
+		},
+		"password": []string{
+			"required:密码为必填项",
+			"min:密码长度需大于 6",
+		},
+		"password_confirm": []string{
+			"required:确认密码框为必填项",
+		},
+		"verify_code": []string{
+			"required:验证码答案必填",
+			"digits:验证码长度必须为 6 位的数字",
+		},
+	}
+
+	errs := validate(data, rules, messages)
+
+	_data := data.(*SignupUsingPhoneRequest)
+	errs = validators.ValidatePasswordConfirm(_data.Password, _data.PasswordConfirm, errs)
+	errs = validators.ValidateVerifyCode(_data.Phone, _data.VerifyCode, errs)
+
+	return errs
 }
 
 func Validate(c *gin.Context, obj interface{}, handler ValidatorFunc) bool {
