@@ -12,7 +12,7 @@ func init() {
 				"password": config.Env("MAIL_PASSWORD", ""),
 			},
 			"from": map[string]interface{}{
-				"address": config.Env("MAIL_FROM_ADDRESS", "thub@example.com"),
+				"address": config.Env("MAIL_FROM_ADDRESS", "1298489481@qq.com"),
 				"name":    config.Env("MAIL_FROM_NAME", "THub"),
 			},
 		}

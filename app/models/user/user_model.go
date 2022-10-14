@@ -17,7 +17,7 @@ type User struct {
 
 // 插入一条数据
 func (user *User) Create() {
-	database.DB.Create(user)
+	database.DB.Create(&user)
 }
 
 // 匹对密码是否正确

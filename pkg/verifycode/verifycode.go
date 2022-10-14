@@ -53,9 +53,9 @@ func (vs *VerifyCode) SendSMS(phone string) bool {
 // 发送邮件验证码
 func (vs *VerifyCode) SendEmail(email string) error {
 	code := vs.generateVerifyCode(email)
-	if !app.IsProduction() && strings.HasSuffix(email, config.GetString("verifycode.debug_email_suffix")) {
-		return nil
-	}
+	// if !app.IsProduction() && strings.HasSuffix(email, config.GetString("verifycode.debug_email_suffix")) {
+	// 	return nil
+	// }
 	content := fmt.Sprintf("<h1>您的 Email 验证码是 %v </h1>", code)
 	// 发送邮件
 	mail.NewMailer().Send(mail.Email{
@@ -83,7 +83,7 @@ func (vc *VerifyCode) CheckAnswer(key, answer string) bool {
 	}
 
 	// 这个false在线上环境要改为true
-	return vc.Store.Verify(key, answer, false)
+	return vc.Store.Verify(key, answer, true)
 }
 
 // 生成验证码并保存在Redis中
