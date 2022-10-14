@@ -63,9 +63,9 @@ func (vs *VerifyCode) SendEmail(email string) error {
 			Address: config.GetString("mail.from.address"),
 			Name:    config.GetString("mail.from.name"),
 		},
-		To:      []string{email},
-		Subject: "Email 验证码",
-		HTML:    []byte(content),
+		To:       []string{email},
+		Subject:  "Email 验证码",
+		HTMLBody: content,
 	})
 
 	return nil

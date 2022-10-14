@@ -10,14 +10,18 @@ type From struct {
 	Name    string
 }
 
+type Files struct {
+	FileName string
+	FilePath string
+}
+
 type Email struct {
-	From    From
-	To      []string
-	Bcc     []string
-	Cc      []string
-	Subject string
-	Text    []byte
-	HTML    []byte
+	From     From
+	To       []string
+	Cc       []string
+	Subject  string
+	HTMLBody string
+	File     []Files
 }
 
 type Mailer struct {

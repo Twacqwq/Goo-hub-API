@@ -1,40 +1,44 @@
 package mail
 
 import (
-	"fmt"
-	"net/smtp"
 	"thub/pkg/logger"
 
-	emailPKG "github.com/jordan-wright/email"
+	"github.com/spf13/cast"
+	"gopkg.in/gomail.v2"
 )
 
 // SMTP 实现 mail.Driver interface
 type SMTP struct{}
 
 func (s *SMTP) Send(email Email, config map[string]string) bool {
-	e := emailPKG.NewEmail()
+	m := gomail.NewMessage()
 
-	e.From = fmt.Sprintf("%v <%v>", email.From.Name, email.From.Address)
-	e.To = email.To
-	e.Bcc = email.Bcc
-	e.Cc = email.Cc
-	e.Subject = email.Subject
-	e.Text = email.Text
-	e.HTML = email.HTML
+	// 发送者
+	m.SetHeader("From", m.FormatAddress(email.From.Address, email.From.Name))
+	// 接收者
+	m.SetHeader("To", email.To...)
+	// m.SetAddressHeader("To", "example.com", "user")
+	// 抄送者
+	m.SetHeader("Cc", email.Cc...)
+	// 邮件标题
+	m.SetHeader("Subject", email.Subject)
+	// 邮件正文
+	m.SetBody("text/html", email.HTMLBody)
+	// 邮件附件
+	if len(email.File) > 0 {
+		for _, files := range email.File {
+			m.Attach(files.FilePath, gomail.Rename(files.FileName))
+		}
+	}
 
-	logger.DebugJSON("发送邮件", "发送详情", e)
+	logger.DebugJSON("发送邮件", "发送详情", email)
 
-	err := e.Send(
-		fmt.Sprintf("%v:%v", config["host"], config["port"]),
-		smtp.PlainAuth(
-			"",
-			config["username"],
-			config["password"],
-			config["host"],
-		),
-	)
-	if err != nil {
-		logger.ErrorString("发送邮件", "发送错误", err.Error())
+	d := gomail.NewDialer(config["host"], cast.ToInt(config["port"]), config["username"], config["password"])
+	//d.TLSConfig = &tls.Config{InsecureSkipVerify: true} // 关闭TLS认证
+
+	// Send
+	if err := d.DialAndSend(m); err != nil {
+		logger.ErrorString("发送邮件", "发送出错", err.Error())
 		return false
 	}
 
