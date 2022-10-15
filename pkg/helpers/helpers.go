@@ -51,3 +51,12 @@ func RandomNumber(length int) string {
 	}
 	return string(b)
 }
+
+// 安全获取 args[0]
+func FirstElement(args []string) string {
+	if len(args) > 0 {
+		return args[0]
+	}
+
+	return ""
+}
