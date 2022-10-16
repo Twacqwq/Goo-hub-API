@@ -8,10 +8,6 @@ var CmdPlay = &cobra.Command{
 	Run:   runPlay,
 }
 
-func init() {
-	rootCmd.AddCommand(CmdPlay)
-}
-
 func runPlay(cmd *cobra.Command, args []string) {
 	// todo 想测试的block
 }

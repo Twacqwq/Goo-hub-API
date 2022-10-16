@@ -17,10 +17,6 @@ var CmdServe = &cobra.Command{
 	Args:  cobra.NoArgs, // 限制无参 输入其他参数报错
 }
 
-func init() {
-	rootCmd.AddCommand(CmdServe)
-}
-
 func runWeb(cmd *cobra.Command, args []string) {
 	gin.SetMode(gin.ReleaseMode)
 

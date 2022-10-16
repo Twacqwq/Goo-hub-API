@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"thub/app/cmd/make"
 	"thub/bootstrap"
 	"thub/pkg/config"
 	"thub/pkg/console"
@@ -22,6 +23,13 @@ var rootCmd = &cobra.Command{
 		bootstrap.SetupDB()
 		bootstrap.SetupRedis()
 	},
+}
+
+func init() {
+	rootCmd.AddCommand(CmdServe)
+	rootCmd.AddCommand(CmdKey)
+	rootCmd.AddCommand(CmdPlay)
+	rootCmd.AddCommand(make.CmdMake)
 }
 
 // 执行主命令

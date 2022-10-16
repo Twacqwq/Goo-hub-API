@@ -14,10 +14,6 @@ var CmdKey = &cobra.Command{
 	Args:  cobra.NoArgs, // 不允许传参
 }
 
-func init() {
-	rootCmd.AddCommand(CmdKey)
-}
-
 func runKeyGenerate(cmd *cobra.Command, args []string) {
 	console.Success("---")
 	console.Success("App Key:")
