@@ -30,6 +30,7 @@ func init() {
 	rootCmd.AddCommand(CmdKey)
 	rootCmd.AddCommand(CmdPlay)
 	rootCmd.AddCommand(make.CmdMake)
+	rootCmd.AddCommand(CmdMigrate)
 }
 
 // 执行主命令
