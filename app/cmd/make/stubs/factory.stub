@@ -1,0 +1,23 @@
+package factories
+
+import (
+  "thub/app/models/{{PackageName}}"
+  "thub/pkg/helpers"
+
+  "github.com/bxcodec/faker/v3"
+)
+
+func Make{{StructNamePlural}}(count int) []{{PackageName}}.{{StructName}} {
+  var objs []{{PackageName}}.{{StructName}}
+
+  // faker.SetGenerateUniqueValues(true)
+
+  for i := 0; i < count; i++ {
+    {{VariableName}}Model := {{PackageName}}.{{StructName}}{
+      FIXME()
+    }
+    objs = append(objs, {{VariableName}}Model)
+  }
+
+  return objs
+}
