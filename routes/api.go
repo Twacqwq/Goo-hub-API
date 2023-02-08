@@ -1,6 +1,7 @@
 package routes
 
 import (
+	controllers "thub/app/http/controllers/api/v1"
 	"thub/app/http/controllers/api/v1/auth"
 	"thub/app/http/middlewares"
 
@@ -51,6 +52,10 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			authGroup.POST("/password-reset/using-phone", middlewares.GuestJWT(), pwc.ResetByPhone)
 			// 邮箱重置密码
 			authGroup.POST("/password-reset/using-email", middlewares.GuestJWT(), pwc.ResetByEmail)
+
 		}
+		uc := new(controllers.UsersController)
+
+		v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
 	}
 }
