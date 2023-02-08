@@ -54,7 +54,5 @@ func (c *Captcha) VarifyCaptcha(id, answer string) (match bool) {
 		return true
 	}
 
-	// 第三个参数是验证后是否删除，我们选择 false
-	// 这样方便用户多次提交，防止表单提交错误需要多次输入图片验证码
 	return c.Base64Captcha.Verify(id, answer, true)
 }
